@@ -4,20 +4,29 @@
 
 {% block content %}
 <h1>Мои бронирования</h1>
-<p><a href="{% url 'booking-create' %}">Создать новое бронирование</a></p>
+<!-- <p><a href="{% url 'booking-create' %}">Создать новое бронирование</a></p> -->
 <ul>
     {% for booking in bookings %}
         <li>
             Объявление: <a href="{% url 'listing-detail' booking.listing.pk %}">{{ booking.listing.title }}</a>,
             Даты: {{ booking.start_date }} - {{ booking.end_date }},
             Статус: {{ booking.get_status_display }}
-            ХУЯТУС: {{booking.status}}
-            {% if booking.status != 'cancelled' %}
+            {% if user.role != 'landlord' and booking.status != 'cancelled' %}
             <form method="post" action="">
                 {% csrf_token %}
                 <button type="submit" name="cancel_booking" value="{{ booking.id }}">Отменить</button>
             </form>
-        {% endif %}
+            {% endif %}
+            {% if user.role == 'landlord' and booking.status == 'pending' %}
+            <form method="post" action="">
+                {% csrf_token %}
+                <button type="submit" name="confirm_booking" value="{{ booking.id }}">Подтвердить</button>
+            </form>
+            <form method="post" action="">
+                {% csrf_token %}
+                <button type="submit" name="reject_booking" value="{{ booking.id }}">Отклонить</button>
+            </form>
+            {% endif %}
         </li>
     {% empty %}
         <li>Нет созданных бронирований.</li>

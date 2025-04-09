@@ -3,18 +3,56 @@
 {% block title %}Список объявлений{% endblock %}
 
 {% block content %}
-<h1>Объявления о недвижимости</h1>
-{% if user.is_authenticated %}
-    <p><a href="{% url 'listing-create' %}">Создать новое объявление</a></p>
-{% endif %}
-<ul>
-    {% for listing in listings %}
-        <li>
-            <a href="{% url 'listing-detail' listing.pk %}">{{ listing.title }}</a> -
-            {{ listing.price }} €.
-        </li>
-    {% empty %}
-        <li>Нет доступных объявлений.</li>
-    {% endfor %}
-</ul>
+<div class="listings-container">
+    <h1>Объявления о недвижимости</h1>
+    {% if user.is_authenticated and user.role == 'landlord' %}
+        <p><a href="{% url 'listing-create' %}" class="btn btn-primary">Создать новое объявление</a></p>
+    {% endif %}
+    <div class="listings">
+        {% for listing in page_obj %}
+            <div class="listing-card">
+                <h2><a href="{% url 'listing-detail' listing.pk %}">{{ listing.title }}</a></h2>
+                <p><strong>Цена:</strong> {{ listing.price }} €</p>
+                <p><strong>Местоположение:</strong> {{ listing.location }}</p>
+                <p><strong>Количество комнат:</strong> {{ listing.rooms }}</p>
+                <p><strong>Тип:</strong> {{ listing.get_property_type_display }}</p>
+                <p><strong>Статус:</strong> {{ listing.get_status_display }}</p>
+                <p><strong>Автор:</strong> {{ listing.owner.username }}</p>
+                {% if user.is_authenticated and user == listing.owner %}
+                    <p>
+                        <a href="{% url 'listing-update' listing.pk %}" class="btn btn-secondary">Редактировать</a>
+                        <a href="{% url 'listing-delete' listing.pk %}" class="btn btn-danger">Удалить</a>
+                    </p>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>Нет доступных объявлений.</p>
+        {% endfor %}
+    </div>
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">⇤</a>
+                <a href="?page={{ page_obj.previous_page_number }}">←</a>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if num == page_obj.number %}
+                    <span class="current">{{ num }}</span>
+                {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                    <a href="?page={{ num }}">{{ num }}</a>
+                {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                    <a href="?page={{ num }}">{{ num }}</a>
+                {% elif num == page_obj.number|add:"-3" or num == page_obj.number|add:"3" %}
+                    ...
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">→</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">⇥</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
 {% endblock content %}

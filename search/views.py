@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.shortcuts import render
 from .models import SearchHistory
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 
 class ListingSearchView(ListView):
     model = Listing
@@ -40,6 +41,13 @@ class ListingSearchView(ListView):
         if ordering:
             queryset = queryset.order_by(ordering)
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        paginator = Paginator(context['listings'], 2)  # Лимит в 10 объявлений на страницу
+        page_number = self.request.GET.get('page')
+        context['page_obj'] = paginator.get_page(page_number)
+        return context
 
 @login_required
 def search_history(request):

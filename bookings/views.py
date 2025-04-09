@@ -13,7 +13,8 @@ class BookingListView(LoginRequiredMixin, ListView):
     context_object_name = 'bookings'
 
     def get_queryset(self):
-        # Теперь request.user гарантированно авторизован
+        if self.request.user.role == 'landlord':
+            return Booking.objects.filter(listing__owner=self.request.user)
         return Booking.objects.filter(user=self.request.user)
 
     def post(self, request, *args, **kwargs):

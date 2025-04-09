@@ -8,11 +8,22 @@ from django.contrib.auth.models import Group
 from bookings.forms import BookingForm
 from bookings.models import Booking
 from django.db.models import Q
+from django.core.paginator import Paginator
 
 class ListingListView(ListView):
     model = Listing
     template_name = 'listings/listing_list.html'
     context_object_name = 'listings'
+
+    def get_queryset(self):
+        return super().get_queryset().order_by('-created_at')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        paginator = Paginator(context['listings'], 2)  # Лимит в 2 объявления на страницу
+        page_number = self.request.GET.get('page')
+        context['page_obj'] = paginator.get_page(page_number)
+        return context
 
 class ListingDetailView(DetailView):
     model = Listing

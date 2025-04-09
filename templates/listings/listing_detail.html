@@ -72,7 +72,10 @@
 {% if user.is_authenticated %}
     <form method="post" action="{% url 'review-create-fbv' listing.pk %}">
         {% csrf_token %}
-        {{ review_form.as_p }}
+        {{ review_form.rating.label_tag }}
+        <input type="number" name="rating" id="id_rating" min="0" max="5" required>
+        {{ review_form.comment.label_tag }}
+        {{ review_form.comment }}
         <button type="submit" name="review_submit">Отправить отзыв</button>
     </form>
 {% else %}
