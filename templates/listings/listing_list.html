@@ -11,7 +11,7 @@
     {% for listing in listings %}
         <li>
             <a href="{% url 'listing-detail' listing.pk %}">{{ listing.title }}</a> -
-            {{ listing.price }} руб.
+            {{ listing.price }} €.
         </li>
     {% empty %}
         <li>Нет доступных объявлений.</li>

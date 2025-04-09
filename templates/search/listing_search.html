@@ -55,7 +55,7 @@
 <h2>Результаты поиска</h2>
 <ul>
     {% for listing in listings %}
-        <li><a href="{% url 'listing-detail' listing.pk %}">{{ listing.title }}</a> – {{ listing.price }} EUR.</li>
+        <li><a href="{% url 'listing-detail' listing.pk %}">{{ listing.title }}</a> – {{ listing.price }} €.</li>
     {% empty %}
         <li>Объявления не найдены.</li>
     {% endfor %}
