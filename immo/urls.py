@@ -26,5 +26,4 @@ urlpatterns = [
     path('search/', include('search.urls')),
     path('bookings/', include('bookings.urls')),
     path('reviews/', include('reviews.urls')),
-    path('analytics/', include('analytics.urls')),
 ]

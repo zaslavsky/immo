@@ -33,16 +33,18 @@
                     <strong>Арендатор:</strong> {{ booking.user.username }}<br>
                     <strong>Даты:</strong> {{ booking.start_date }} - {{ booking.end_date }}<br>
                     <strong>Статус:</strong> {{ booking.status }}<br>
-                    <strong>Комментарий:</strong> {{ booking.comment }}<br>
+                    <strong>Комментарий:</strong> {{ booking.comments }}<br>
                     <strong>Создано:</strong> {{ booking.created_at|date:"d.m.Y H:i" }}<br>
-                    <form method="post" action="">
-                        {% csrf_token %}
-                        <button type="submit" name="confirm_booking" value="{{ booking.id }}">Подтвердить</button>
-                    </form>
-                    <form method="post" action="">
-                        {% csrf_token %}
-                        <button type="submit" name="reject_booking" value="{{ booking.id }}">Отклонить</button>
-                    </form>
+                    {% if booking.status == 'pending' %}
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <button type="submit" name="confirm_booking" value="{{ booking.id }}">Подтвердить</button>
+                        </form>
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <button type="submit" name="reject_booking" value="{{ booking.id }}">Отклонить</button>
+                        </form>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ul>
@@ -57,6 +59,8 @@
         {{ booking_form.start_date }}
         {{ booking_form.end_date.label_tag }}
         {{ booking_form.end_date }}
+        {{ booking_form.comments.label_tag }}
+        {{ booking_form.comments }}
         <button type="submit" name="book_submit">Забронировать</button>
     </form>
 {% else %}

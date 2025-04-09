@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}История поиска{% endblock %}
+
+{% block content %}
+<h1>История поиска</h1>
+{% if history.exists %}
+    <ul>
+        {% for entry in history %}
+            <li>
+                <strong>Запрос:</strong> {{ entry.query }}<br>
+                <strong>Дата:</strong> {{ entry.timestamp|date:"d.m.Y H:i" }}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>История поиска пуста.</p>
+{% endif %}
+{% endblock %}

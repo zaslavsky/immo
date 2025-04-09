@@ -15,6 +15,8 @@ class Booking(models.Model):
     end_date = models.DateField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
+    comments = models.TextField(blank=True, null=True)
+    
 
     def __str__(self):
         return f"Booking by {self.user.username} for {self.listing.title}"

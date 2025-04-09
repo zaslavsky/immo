@@ -2,6 +2,9 @@
 from django.views.generic import ListView
 from listings.models import Listing
 from django.db.models import Q
+from django.shortcuts import render
+from .models import SearchHistory
+from django.contrib.auth.decorators import login_required
 
 class ListingSearchView(ListView):
     model = Listing
@@ -37,3 +40,11 @@ class ListingSearchView(ListView):
         if ordering:
             queryset = queryset.order_by(ordering)
         return queryset
+
+@login_required
+def search_history(request):
+    if request.user.role != 'tenant':
+        return render(request, '403.html', status=403)
+
+    history = SearchHistory.objects.filter(user=request.user).order_by('-timestamp')
+    return render(request, 'search/search_history.html', {'history': history})

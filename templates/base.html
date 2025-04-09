@@ -19,9 +19,7 @@
         <a href="{% url 'listing-search' %}">Поиск</a>
         {% if user.is_authenticated%}
         <a href="{% url 'booking-list' %}">Бронирования</a>
-        <a href="{% url 'review-list' %}">Отзывы</a>
-        <a href="{% url 'search-history' %}">История поиска</a>
-        <a href="{% url 'listing-views' %}">Просмотры</a>
+        <!-- <a href="{% url 'review-list' %}">Отзывы</a> -->
         {% endif %}
         {% if user.is_authenticated %}
             <span style="margin-left: 30px;">Привет, {{ user.username }}! Ты {{user.role}}</span>

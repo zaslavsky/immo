@@ -11,6 +11,13 @@
             Объявление: <a href="{% url 'listing-detail' booking.listing.pk %}">{{ booking.listing.title }}</a>,
             Даты: {{ booking.start_date }} - {{ booking.end_date }},
             Статус: {{ booking.get_status_display }}
+            ХУЯТУС: {{booking.status}}
+            {% if booking.status != 'cancelled' %}
+            <form method="post" action="">
+                {% csrf_token %}
+                <button type="submit" name="cancel_booking" value="{{ booking.id }}">Отменить</button>
+            </form>
+        {% endif %}
         </li>
     {% empty %}
         <li>Нет созданных бронирований.</li>
