@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Просмотры объявлений{% endblock %}
+
+{% block content %}
+<h1>Просмотры объявлений</h1>
+<ul>
+    {% for log in view_logs %}
+        <li>
+            "{{ log.listing.title }}" — просмотрено {{ log.viewed_at|date:"d.m.Y H:i" }}
+            {% if log.ip_address %}(IP: {{ log.ip_address }}){% endif %}
+        </li>
+    {% empty %}
+        <li>Нет данных о просмотрах.</li>
+    {% endfor %}
+</ul>
+{% endblock content %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Список объявлений{% endblock %}
+
+{% block content %}
+<h1>Объявления о недвижимости</h1>
+{% if user.is_authenticated %}
+    <p><a href="{% url 'listing-create' %}">Создать новое объявление</a></p>
+{% endif %}
+<ul>
+    {% for listing in listings %}
+        <li>
+            <a href="{% url 'listing-detail' listing.pk %}">{{ listing.title }}</a> -
+            {{ listing.price }} руб.
+        </li>
+    {% empty %}
+        <li>Нет доступных объявлений.</li>
+    {% endfor %}
+</ul>
+{% endblock content %}

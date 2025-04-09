@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}{{ listing.title }}{% endblock %}
+
+{% block content %}
+<h1>{{ listing.title }}</h1>
+<p><strong>Описание:</strong> {{ listing.description }}</p>
+<p><strong>Местоположение:</strong> {{ listing.location }}</p>
+<p><strong>Цена:</strong> {{ listing.price }} руб.</p>
+<p><strong>Количество комнат:</strong> {{ listing.rooms }}</p>
+<p><strong>Тип:</strong> {{ listing.get_property_type_display }}</p>
+<p><strong>Статус:</strong> {{ listing.get_status_display }}</p>
+<p><strong>Автор:</strong> {{ listing.owner.username }}</p>
+
+{% if user.is_authenticated and user == listing.owner %}
+    <p>
+        <a href="{% url 'listing-update' listing.pk %}">Редактировать</a> |
+        <a href="{% url 'listing-delete' listing.pk %}">Удалить</a>
+    </p>
+{% endif %}
+
+<hr>
+<h2>Бронирование</h2>
+{% if booking_success %}
+    <p class="success-message">Бронирование успешно создано!</p>
+{% endif %}
+{% if is_landlord %}
+    <h2>Бронирования на вашу недвижимость</h2>
+    {% if landlord_bookings %}
+        <ul>
+            {% for booking in landlord_bookings %}
+                <li>
+                    <strong>Арендатор:</strong> {{ booking.user.username }}<br>
+                    <strong>Даты:</strong> {{ booking.start_date }} - {{ booking.end_date }}<br>
+                    <strong>Статус:</strong> {{ booking.status }}<br>
+                    <strong>Комментарий:</strong> {{ booking.comment }}<br>
+                    <strong>Создано:</strong> {{ booking.created_at|date:"d.m.Y H:i" }}<br>
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <button type="submit" name="confirm_booking" value="{{ booking.id }}">Подтвердить</button>
+                    </form>
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <button type="submit" name="reject_booking" value="{{ booking.id }}">Отклонить</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Нет активных бронирований.</p>
+    {% endif %}
+{% elif is_tenant %}
+    <form method="post" action="{% url 'booking-create' listing.pk %}">
+        {% csrf_token %}
+        <input type="hidden" name="listing" value="{{ listing.pk }}">
+        {{ booking_form.start_date.label_tag }}
+        {{ booking_form.start_date }}
+        {{ booking_form.end_date.label_tag }}
+        {{ booking_form.end_date }}
+        <button type="submit" name="book_submit">Забронировать</button>
+    </form>
+{% else %}
+    <p>Для бронирования <a href="{% url 'login' %}">войдите в систему</a>.</p>
+{% endif %}
+
+<hr>
+<h2>Оставить отзыв</h2>
+{% if user.is_authenticated %}
+    <form method="post" action="{% url 'review-create-fbv' listing.pk %}">
+        {% csrf_token %}
+        {{ review_form.as_p }}
+        <button type="submit" name="review_submit">Отправить отзыв</button>
+    </form>
+{% else %}
+    <p>Для оставления отзыва <a href="{% url 'login' %}">войдите в систему</a>.</p>
+{% endif %}
+
+<hr>
+<h2>Отзывы</h2>
+{% if reviews %}
+    <ul>
+        {% for review in reviews %}
+            <li>
+                <strong>{{ review.user.username }}</strong> оценил(а): {{ review.rating }}/5<br>
+                <em>{{ review.comment }}</em><br>
+                <small>{{ review.created_at|date:"d.m.Y H:i" }}</small>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Отзывов пока нет.</p>
+{% endif %}
+
+{% endblock content %}

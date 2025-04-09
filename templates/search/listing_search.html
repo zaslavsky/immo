@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Поиск объявлений{% endblock %}
+
+{% block content %}
+<h1>Поиск объявлений</h1>
+<form method="get">
+    <p>
+        <label for="q">Ключевое слово:</label>
+        <input type="text" name="q" id="q" value="{{ request.GET.q }}">
+    </p>
+    <p>
+        <label for="min_price">Минимальная цена:</label>
+        <input type="number" name="min_price" id="min_price" value="{{ request.GET.min_price }}">
+    </p>
+    <p>
+        <label for="max_price">Максимальная цена:</label>
+        <input type="number" name="max_price" id="max_price" value="{{ request.GET.max_price }}">
+    </p>
+    <p>
+        <label for="location">Местоположение:</label>
+        <input type="text" name="location" id="location" value="{{ request.GET.location }}">
+    </p>
+    <p>
+        <label for="min_rooms">Минимум комнат:</label>
+        <input type="number" name="min_rooms" id="min_rooms" value="{{ request.GET.min_rooms }}">
+    </p>
+    <p>
+        <label for="max_rooms">Максимум комнат:</label>
+        <input type="number" name="max_rooms" id="max_rooms" value="{{ request.GET.max_rooms }}">
+    </p>
+    <p>
+        <label for="property_type">Тип жилья:</label>
+        <select name="property_type" id="property_type">
+            <option value="">Любой</option>
+            <option value="apartment">Квартира</option>
+            <option value="house">Дом</option>
+            <option value="studio">Студия</option>
+        </select>
+    </p>
+    <p>
+        <label for="ordering">Сортировка:</label>
+        <select name="ordering" id="ordering">
+            <option value="">Без сортировки</option>
+            <option value="price">Цена - по возрастанию</option>
+            <option value="-price">Цена - по убыванию</option>
+            <option value="created_at">Дата - от старых к новым</option>
+            <option value="-created_at">Дата - от новых к старым</option>
+        </select>
+    </p>
+    <button type="submit">Искать</button>
+</form>
+
+<hr>
+<h2>Результаты поиска</h2>
+<ul>
+    {% for listing in listings %}
+        <li><a href="{% url 'listing-detail' listing.pk %}">{{ listing.title }}</a> – {{ listing.price }} EUR.</li>
+    {% empty %}
+        <li>Объявления не найдены.</li>
+    {% endfor %}
+</ul>
+{% endblock content %}

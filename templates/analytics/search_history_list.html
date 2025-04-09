@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}История поиска{% endblock %}
+
+{% block content %}
+<h1>История поиска</h1>
+<ul>
+    {% for history in histories %}
+        <li>
+            {{ history.query }} — {{ history.searched_at|date:"d.m.Y H:i" }}
+        </li>
+    {% empty %}
+        <li>История поиска пуста.</li>
+    {% endfor %}
+</ul>
+{% endblock content %}

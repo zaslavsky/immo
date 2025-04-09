@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Мои бронирования{% endblock %}
+
+{% block content %}
+<h1>Мои бронирования</h1>
+<p><a href="{% url 'booking-create' %}">Создать новое бронирование</a></p>
+<ul>
+    {% for booking in bookings %}
+        <li>
+            Объявление: <a href="{% url 'listing-detail' booking.listing.pk %}">{{ booking.listing.title }}</a>,
+            Даты: {{ booking.start_date }} - {{ booking.end_date }},
+            Статус: {{ booking.get_status_display }}
+        </li>
+    {% empty %}
+        <li>Нет созданных бронирований.</li>
+    {% endfor %}
+</ul>
+{% endblock content %}
