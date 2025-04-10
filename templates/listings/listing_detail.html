@@ -25,7 +25,7 @@
     <p class="success-message">Бронирование успешно создано!</p>
 {% endif %}
 {% if is_landlord %}
-    <h2>Бронирования на вашу недвижимость</h2>
+    <h3>Бронирования на вашу недвижимость:</h3>
     {% if landlord_bookings %}
         <ul>
             {% for booking in landlord_bookings %}
@@ -69,7 +69,7 @@
 
 <hr>
 <h2>Оставить отзыв</h2>
-{% if user.is_authenticated %}
+{% if user.is_authenticated and not is_landlord %}
     <form method="post" action="{% url 'review-create-fbv' listing.pk %}">
         {% csrf_token %}
         {{ review_form.rating.label_tag }}
@@ -78,6 +78,8 @@
         {{ review_form.comment }}
         <button type="submit" name="review_submit">Отправить отзыв</button>
     </form>
+{% elif user.is_authenticated %}
+    <p>Пользователи с ролью арендодателя не могут оставлять отзывы.</p>
 {% else %}
     <p>Для оставления отзыва <a href="{% url 'login' %}">войдите в систему</a>.</p>
 {% endif %}

@@ -5,5 +5,14 @@
 {% block content %}
 <h1>Профиль пользователя</h1>
 <p>Добро пожаловать, {{ request.user.username }}!</p>
+<p>Ваш email: {{ request.user.email }}</p>
+<p>Роль: {{ request.user.role }}</p>
+<p>Дата регистрации: {{ request.user.date_joined|date:"d.m.Y" }}</p>
+<p>Последний вход: {{ request.user.last_login|date:"d.m.Y H:i" }}</p>
+{% if request.user.role == 'landlord' %}
+<p><a href="{% url 'listing-list' %}">Мои объявления</a></p>
+{% elif request.user.role == 'tenant' %}
+<p><a href="{% url 'booking-list' %}">Мои бронирования</a></p>
+{% endif %}
 <!-- Здесь можно добавить дополнительную информацию о пользователе -->
 {% endblock %}
